@@ -44,6 +44,8 @@ const useStyles = makeStyles({
 
 const HexSelect = props => {
     const styles = useStyles();
+    const renderValue = React.useCallback(()=><div></div>,[])
+    const handleSelectChange = React.useCallback(e => props.onChange(e.target.value),[props])
     return (
         <FormControl className={styles.wrapper}>
             <Select
@@ -52,9 +54,9 @@ const HexSelect = props => {
                     select: styles.select,
                     icon: styles.icon, 
                 }}
-                onChange={e => props.onChange(e.target.value)}
+                onChange={handleSelectChange}
                 input={<CustomInput/>}
-                renderValue={selected => <div></div>}
+                renderValue={renderValue}
                 MenuProps={{
                     classes: {
                         paper: styles.paper

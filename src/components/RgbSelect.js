@@ -46,7 +46,7 @@ const RgbSelect = props => {
         setRGBvales(rgbColor);
     }, [props.value])
 
-    const changeColorHandler = (e, newValue, color) => {
+    const changeColorHandler = React.useCallback((newValue, color) => {
         switch (color) {
             case 'r': 
                 setRGBvales(prevRGB => ({...prevRGB, r: newValue}));
@@ -57,24 +57,30 @@ const RgbSelect = props => {
             case 'b':
                 setRGBvales(prevRGB => ({...prevRGB, b: newValue}));
                 break;
+            default:
         }
-    }
+    }, [setRGBvales])
 
-    const cancelHandler = () => {
+    const cancelHandler = React.useCallback(() => {
         const rgbColor = convertHexToRGB(props.value);
         setOpenedMenu(false);
         setRGBvales(rgbColor);
-    }
+    }, [props.value])
 
-    const submitHandler = () => {
+    const submitHandler = React.useCallback(() => {
         const hexColor = convertRGBtoHex(rgbValues);
         setOpenedMenu(false);
         props.onChange(hexColor);
-    }
+    }, [props, rgbValues])
 
-    const onClickAwayHandler = () => {
+    const onClickAwayHandler = React.useCallback(() => {
         setOpenedMenu(false)
-    }
+    },[])
+    
+    const changeSliderHandler = React.useCallback((event, value) => {
+        const color = event.target.dataset.key;
+        changeColorHandler(value, color)
+      }, [changeColorHandler]);
 
     return (
         <div className={styles.wrapper}>
@@ -102,7 +108,9 @@ const RgbSelect = props => {
                                 defaultValue={rgbValues.r}
                                 step={1} min={0} max={255}
                                 onClick={e => e.preventDefault()}
-                                onChange={(e, newValue) => changeColorHandler(e, newValue, 'r')}/>
+                                data-key="r"
+                                onChange={changeSliderHandler}
+                                />
                         </CustomListItem>
                         <CustomListItem label="G">
                             <Slider
@@ -110,7 +118,9 @@ const RgbSelect = props => {
                                 step={1}
                                 min={0}
                                 max={255}
-                                onChange={(e, newValue) => changeColorHandler(e, newValue, 'g')}/>
+                                data-key="g"
+                                onChange={changeSliderHandler}
+                                />
                         </CustomListItem>
                         <CustomListItem label="B">
                             <Slider
@@ -118,7 +128,9 @@ const RgbSelect = props => {
                                 step={1}
                                 min={0}
                                 max={255}
-                                onChange={(e, newValue) => changeColorHandler(e, newValue, 'b')}/>
+                                data-key="b"
+                                onChange={changeSliderHandler}
+                                />
                         </CustomListItem>
                         <div className={styles.buttonsContainer}>
                             <Button onClick={cancelHandler}>Cancel</Button>
